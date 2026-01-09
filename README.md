@@ -1,36 +1,219 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FORGE - Solana Development Platform
 
-## Getting Started
+![FORGE Logo](https://img.shields.io/badge/FORGE-Solana-black?style=for-the-badge&logo=solana)
+![Node.js](https://img.shields.io/badge/Node.js-18+-green?style=flat-square&logo=node.js)
+![Rust](https://img.shields.io/badge/Rust-1.70+-orange?style=flat-square&logo=rust)
+![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?style=flat-square&logo=typescript)
 
-First, run the development server:
+**FORGE is your complete development platform for building, testing, and deploying Solana programs with AI-powered assistance.**
+
+## ✨ Features
+
+- 🚀 **Next.js 15** frontend with modern React patterns
+- 🖥️ **CLI Tool** for project management and deployment
+- 📚 **TypeScript SDK** with Zod validation and utilities
+- 🔧 **Backend API** with x402 payment integration
+- ⚡ **Anchor Programs** with smart contract templates
+- 🎨 **Modern UI** with Tailwind CSS and shadcn/ui
+- 🤖 **AI-Powered** development assistance
+
+## 🛠️ Quick Start
+
+### 1. Automated Setup (Recommended)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+git clone <repository-url>
+cd forge-protocol
+
+# Run the automated setup (installs all dependencies)
+npm run setup
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Manual Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If automated setup fails, follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Install system dependencies
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  # Rust
+sh -c "$(curl -sSfL https://release.solana.com/v1.17.0/install)"  # Solana CLI
+cargo install --git https://github.com/coral-xyz/anchor anchor-cli --tag v0.29.0  # Anchor
 
-## Learn More
+# Install Node.js dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Setup environment
+npm run setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Verify installation
+npm run health
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Start Development
 
-## Deploy on Vercel
+```bash
+# Start the website
+npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# In another terminal, start the backend
+npm run dev:backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Build and link CLI
+npm run build:cli
+cd packages/cli && npm link
+```
+
+### 4. Create Your First Project
+
+```bash
+# Create a new Solana program
+forge init my-awesome-program
+
+# Navigate to the project
+cd my-awesome-program
+
+# Build the program
+forge build
+
+# Test the program
+anchor test
+```
+
+## 📋 Prerequisites
+
+### System Requirements
+- **Node.js**: 18.0.0 or higher
+- **Rust**: 1.70.0 or higher
+- **Solana CLI**: Latest stable
+- **Anchor CLI**: 0.29.0
+
+### Platform Support
+- ✅ **Linux** (Ubuntu 20.04+, Fedora 33+)
+- ✅ **macOS** (10.15+)
+- ✅ **Windows** (WSL2 recommended)
+
+## 🚀 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run setup` | Automated environment setup |
+| `npm run health` | Check system health |
+| `npm run dev` | Start Next.js development server |
+| `npm run build` | Build Next.js application |
+| `npm run build:all` | Build all packages |
+| `npm run dev:backend` | Start backend API server |
+| `npm run install:all` | Install all dependencies |
+
+## 📁 Project Structure
+
+```
+forge-protocol/
+├── app/                    # Next.js frontend
+├── packages/
+│   ├── cli/               # CLI tool (@forge/cli)
+│   ├── sdk/               # TypeScript SDK (@forge/sdk)
+│   └── backend/           # API server (@forge/backend)
+├── programs/              # Anchor smart contracts
+├── docs/                  # Documentation
+├── setup.sh              # Automated setup script
+└── health-check.js       # System validation
+```
+
+## 🔧 Development Workflow
+
+### Creating Programs
+```bash
+# Initialize a new project
+forge init my-program
+
+# Choose template (basic, token, nft, dao)
+forge init my-program --template token
+
+# Build the program
+cd my-program && forge build
+
+# Test locally
+anchor test
+
+# Deploy to devnet
+anchor deploy
+```
+
+### Using the SDK
+```typescript
+import { ForgeSDK } from '@forge/sdk';
+
+const sdk = new ForgeSDK({ network: 'devnet' });
+
+// Validate program configuration
+const result = sdk.validateProgram(config);
+```
+
+### Payment Integration
+```typescript
+// Create payment request
+const response = await fetch('/api/payments/create', {
+  method: 'POST',
+  body: JSON.stringify({
+    amount: 1.0,
+    currency: 'SOL',
+    recipient: 'treasury_address'
+  })
+});
+```
+
+## 🔐 Environment Configuration
+
+### Root (.env.local)
+```env
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+```
+
+### Backend (packages/backend/.env.local)
+```env
+TREASURY_PUBKEY=your_treasury_wallet
+HELIUS_RPC_URL=https://devnet.helius-rpc.com/?api-key=your_key
+PORT=3001
+```
+
+## 🧪 Testing
+
+```bash
+# Test all packages
+npm test
+
+# Test individual packages
+npm run test:cli
+npm run test:sdk
+npm run test:backend
+```
+
+## 📚 Documentation
+
+- [Getting Started Guide](./docs/guides/getting-started.md)
+- [Architecture Overview](./docs/architecture/overview.md)
+- [API Reference](./docs/api/index.md)
+- [CLI Commands](./docs/guides/cli-commands.md)
+- [Troubleshooting](./docs/guides/troubleshooting.md)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Run tests: `npm test`
+4. Submit a pull request
+
+## 📄 License
+
+FORGE is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
+
+## 🆘 Support
+
+- 📖 [Documentation](./docs/)
+- 💬 [Discord Community](https://discord.gg/forge)
+- 🐛 [GitHub Issues](https://github.com/forge-protocol/issues)
+
+---
+
+**Built with ❤️ for the Solana ecosystem**

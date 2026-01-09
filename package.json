@@ -2,11 +2,31 @@
   "name": "forge-protocol",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "programs/*"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup": "./setup.sh",
+    "health": "node validate-installation.js",
+    "build:cli": "cd packages/cli && npm run build",
+    "build:sdk": "cd packages/sdk && npm run build",
+    "build:backend": "cd packages/backend && npm run build",
+    "build:all": "npm run build && npm run build:cli && npm run build:sdk && npm run build:backend",
+    "dev:backend": "cd packages/backend && npm run dev",
+    "install:all": "npm install && npm run install:cli && npm run install:sdk && npm run install:backend",
+    "install:cli": "cd packages/cli && npm install",
+    "install:sdk": "cd packages/sdk && npm install",
+    "install:backend": "cd packages/backend && npm install",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist",
+    "test": "npm run test:cli && npm run test:sdk && npm run test:backend",
+    "test:cli": "cd packages/cli && npm test",
+    "test:sdk": "cd packages/sdk && npm test",
+    "test:backend": "cd packages/backend && npm test"
   },
   "dependencies": {
     "react": "^19.0.0",
