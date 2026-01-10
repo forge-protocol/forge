@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "Thin, brutal Solana runtime for FORGE"
 license = "MIT"
-repository = "https://github.com/forge-protocol/forge-protocol"
+repository = "https://github.com/forge-protocol/forge"
 keywords = ["solana", "blockchain", "runtime", "forge"]
 categories = ["api-bindings", "command-line-utilities"]
 
