@@ -16,7 +16,15 @@ npm install -g forge-solana-sdk
 
 ### Initialize a project
 ```bash
+# Basic project
 forge init my-project
+
+# With intent-driven CPI generation
+forge init my-project --intent "transfer 100 tokens safely"
+
+# With specific Anchor version
+forge init my-project --anchor-version 0.31.0
+
 cd my-project
 ```
 
@@ -24,6 +32,12 @@ cd my-project
 ```bash
 forge status
 ```
+
+Enhanced status checks include:
+- ✅ Version compatibility warnings
+- ✅ Rust edition 2024 requirements
+- ✅ Anchor CLI vs project version matching
+- ✅ Network configuration
 
 ### Deploy to Solana
 ```bash
@@ -33,9 +47,11 @@ forge deploy
 ## 📋 Prerequisites
 
 - **Node.js** 18+
-- **Rust** 1.70+
+- **Rust** 1.85.0+ (required for edition 2024 compatibility)
 - **Solana CLI** (latest)
-- **Anchor CLI** 0.29.0
+- **Anchor CLI** 0.29.0+
+
+⚠️ **Important**: Rust 1.85.0+ is required for modern Anchor dependencies. Update with: `rustup update stable`
 
 ## 🎯 What FORGE Does
 
@@ -46,6 +62,20 @@ FORGE generates production-ready Anchor programs from intent. It creates the boi
 - ✅ Sets up lib.rs with Anchor framework
 - ✅ Configures Anchor.toml for deployment
 - ✅ Works with real Solana networks
+
+## 🛠️ Troubleshooting
+
+### Version Compatibility Issues
+If you encounter build errors:
+
+1. **Update Rust**: `rustup update stable` (requires 1.85.0+)
+2. **Check versions**: `forge status` (shows mismatches)
+3. **Specify version**: `forge init --anchor-version 0.32.1`
+
+### Common Errors
+- `edition2024` errors → Update Rust to 1.85.0+
+- Version mismatches → Use `forge status` to check alignment
+- Build failures → Ensure Anchor CLI matches project versions
 
 ## 🚫 What FORGE Does NOT Do
 
