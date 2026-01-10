@@ -1,15 +1,15 @@
 # FORGE SDK
 
-![npm](https://img.shields.io/npm/v/forge-sdk-solana)
-![npm](https://img.shields.io/npm/dm/forge-sdk-solana)
-![License](https://img.shields.io/npm/l/forge-sdk-solana)
+![npm](https://img.shields.io/npm/v/forge-solana-sdk)
+![npm](https://img.shields.io/npm/dm/forge-solana-sdk)
+![License](https://img.shields.io/npm/l/forge-solana-sdk)
 
 Intent-driven app assembly on Solana. Infrastructure that survives.
 
 ## ⚡ Install
 
 ```bash
-npm install -g forge-sdk-solana
+npm install -g forge-solana-sdk
 ```
 
 ## 🚀 Usage
@@ -112,7 +112,7 @@ MIT - [https://github.com/forge-protocol/forge/blob/main/LICENSE](https://github
 ## 🔗 Links
 
 - **Homepage**: [https://github.com/forge-protocol/forge](https://github.com/forge-protocol/forge)
-- **NPM Package**: [https://www.npmjs.com/package/forge-sdk-solana](https://www.npmjs.com/package/forge-sdk-solana)
+- **NPM Package**: [https://www.npmjs.com/package/forge-solana-sdk](https://www.npmjs.com/package/forge-solana-sdk)
 - **Issues**: [https://github.com/forge-protocol/forge/issues](https://github.com/forge-protocol/forge/issues)
 
 ---
