@@ -5,16 +5,17 @@
 ![Rust](https://img.shields.io/badge/Rust-1.70+-orange?style=flat-square&logo=rust)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?style=flat-square&logo=typescript)
 
-**FORGE is your complete CLI toolkit for building, testing, and deploying Solana programs with AI-powered assistance.**
+**FORGE is your complete development platform for building, testing, and deploying Solana programs with AI-powered assistance.**
 
 ## ✨ Features
 
+- 🚀 **Next.js 15** frontend with modern React patterns
 - 🖥️ **CLI Tool** for project management and deployment
 - 📚 **TypeScript SDK** with Zod validation and utilities
 - 🔧 **Backend API** with x402 payment integration
 - ⚡ **Anchor Programs** with smart contract templates
+- 🎨 **Modern UI** with Tailwind CSS and shadcn/ui
 - 🤖 **AI-Powered** development assistance
-- 🔧 **Automated Setup** with health checks and validation
 
 ## 🛠️ Quick Start
 
@@ -52,12 +53,15 @@ npm run health
 ### 3. Start Development
 
 ```bash
-# Build and link CLI
-npm run build:cli
-cd packages/cli && npm link
+# Start the website
+npm run dev
 
 # In another terminal, start the backend
 npm run dev:backend
+
+# Build and link CLI
+npm run build:cli
+cd packages/cli && npm link
 ```
 
 ### 4. Create Your First Project
@@ -95,15 +99,17 @@ anchor test
 |---------|-------------|
 | `npm run setup` | Automated environment setup |
 | `npm run health` | Check system health |
-| `npm run build:all` | Build all packages (CLI, SDK, Backend) |
+| `npm run dev` | Start Next.js development server |
+| `npm run build` | Build Next.js application |
+| `npm run build:all` | Build all packages |
 | `npm run dev:backend` | Start backend API server |
 | `npm run install:all` | Install all dependencies |
-| `npm run test` | Run all package tests |
 
 ## 📁 Project Structure
 
 ```
 forge-protocol/
+├── app/                    # Next.js frontend
 ├── packages/
 │   ├── cli/               # CLI tool (@forge/cli)
 │   ├── sdk/               # TypeScript SDK (@forge/sdk)
@@ -111,8 +117,7 @@ forge-protocol/
 ├── programs/              # Anchor smart contracts
 ├── docs/                  # Documentation
 ├── setup.sh              # Automated setup script
-├── health-check.js       # System validation
-└── validate-installation.js # Comprehensive validation
+└── health-check.js       # System validation
 ```
 
 ## 🔧 Development Workflow
@@ -145,22 +150,31 @@ const sdk = new ForgeSDK({ network: 'devnet' });
 const result = sdk.validateProgram(config);
 ```
 
-### Backend API
-```bash
-# Start the backend server
-npm run dev:backend
-
-# API will be available at http://localhost:3001
+### Payment Integration
+```typescript
+// Create payment request
+const response = await fetch('/api/payments/create', {
+  method: 'POST',
+  body: JSON.stringify({
+    amount: 1.0,
+    currency: 'SOL',
+    recipient: 'treasury_address'
+  })
+});
 ```
 
 ## 🔐 Environment Configuration
+
+### Root (.env.local)
+```env
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+```
 
 ### Backend (packages/backend/.env.local)
 ```env
 TREASURY_PUBKEY=your_treasury_wallet
 HELIUS_RPC_URL=https://devnet.helius-rpc.com/?api-key=your_key
 PORT=3001
-NODE_ENV=development
 ```
 
 ## 🧪 Testing
