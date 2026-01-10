@@ -1,14 +1,17 @@
-import { execSync } from 'child_process';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { join } from 'path';
-import { logo } from '../ascii.js';
-export async function initCommand(projectName) {
-    console.log(logo);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.initCommand = initCommand;
+const child_process_1 = require("child_process");
+const fs_1 = require("fs");
+const path_1 = require("path");
+const ascii_js_1 = require("../ascii.js");
+async function initCommand(projectName) {
+    console.log(ascii_js_1.logo);
     console.log('FORGE - Solana Development Platform\n');
     const name = projectName || 'forge-project';
     // Check if Anchor is installed
     try {
-        execSync('anchor --version', { stdio: 'pipe' });
+        (0, child_process_1.execSync)('anchor --version', { stdio: 'pipe' });
     }
     catch (error) {
         console.error('❌ Anchor CLI not found. Install with:');
@@ -17,13 +20,13 @@ export async function initCommand(projectName) {
     }
     console.log(`Initializing ${name}...\n`);
     // Create project directory
-    const projectPath = join(process.cwd(), name);
-    if (existsSync(projectPath)) {
+    const projectPath = (0, path_1.join)(process.cwd(), name);
+    if ((0, fs_1.existsSync)(projectPath)) {
         console.error(`❌ Directory ${name} already exists`);
         process.exit(1);
     }
-    mkdirSync(projectPath, { recursive: true });
-    mkdirSync(join(projectPath, 'programs', name, 'src'), { recursive: true });
+    (0, fs_1.mkdirSync)(projectPath, { recursive: true });
+    (0, fs_1.mkdirSync)((0, path_1.join)(projectPath, 'programs', name, 'src'), { recursive: true });
     // Generate program ID (simplified for demo)
     const programId = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS";
     // Create Anchor.toml
@@ -87,9 +90,9 @@ pub mod ${name.replace(/-/g, '_')} {
 pub struct Initialize {}
 `;
     // Write files
-    writeFileSync(join(projectPath, 'Anchor.toml'), anchorToml);
-    writeFileSync(join(projectPath, 'programs', name, 'Cargo.toml'), cargoToml);
-    writeFileSync(join(projectPath, 'programs', name, 'src', 'lib.rs'), libRs);
+    (0, fs_1.writeFileSync)((0, path_1.join)(projectPath, 'Anchor.toml'), anchorToml);
+    (0, fs_1.writeFileSync)((0, path_1.join)(projectPath, 'programs', name, 'Cargo.toml'), cargoToml);
+    (0, fs_1.writeFileSync)((0, path_1.join)(projectPath, 'programs', name, 'src', 'lib.rs'), libRs);
     console.log('✅ Project created successfully!');
     console.log(`\nNext steps:`);
     console.log(`  cd ${name}`);

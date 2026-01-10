@@ -10,7 +10,6 @@
     "bin",
     "dist"
   ],
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",

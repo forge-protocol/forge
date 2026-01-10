@@ -1,9 +1,12 @@
-import { execSync } from 'child_process';
-export async function deployCommand() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deployCommand = deployCommand;
+const child_process_1 = require("child_process");
+async function deployCommand() {
     console.log('Deploying to Solana...\n');
     try {
         // Check if we're in an Anchor project
-        execSync('ls Anchor.toml', { stdio: 'pipe' });
+        (0, child_process_1.execSync)('ls Anchor.toml', { stdio: 'pipe' });
     }
     catch (error) {
         console.error('❌ Not in an Anchor project directory');
@@ -12,9 +15,9 @@ export async function deployCommand() {
     }
     try {
         console.log('Building program...');
-        execSync('anchor build', { stdio: 'inherit' });
+        (0, child_process_1.execSync)('anchor build', { stdio: 'inherit' });
         console.log('\nDeploying...');
-        execSync('anchor deploy', { stdio: 'inherit' });
+        (0, child_process_1.execSync)('anchor deploy', { stdio: 'inherit' });
         console.log('\n✅ Deployment successful!');
     }
     catch (error) {

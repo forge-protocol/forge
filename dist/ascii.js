@@ -1,4 +1,7 @@
-export const logo = `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logo = void 0;
+exports.logo = `
 ███████╗ ██████╗ ██████╗  ██████╗ ███████╗
 ██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝
 █████╗  ██║   ██║██████╔╝██║  ███╗█████╗

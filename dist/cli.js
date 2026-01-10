@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
-import { logo } from './ascii.js';
-import { initCommand } from './commands/init.js';
-import { deployCommand } from './commands/deploy.js';
-import { statusCommand } from './commands/status.js';
-const program = new Command();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const commander_1 = require("commander");
+const ascii_js_1 = require("./ascii.js");
+const init_js_1 = require("./commands/init.js");
+const deploy_js_1 = require("./commands/deploy.js");
+const status_js_1 = require("./commands/status.js");
+const program = new commander_1.Command();
 program
     .name('forge')
     .description('FORGE - Intent-driven app assembly on Solana')
@@ -13,23 +15,23 @@ program
     .command('init [projectName]')
     .description('Initialize a new FORGE project')
     .action(async (projectName) => {
-    await initCommand(projectName);
+    await (0, init_js_1.initCommand)(projectName);
 });
 program
     .command('deploy')
     .description('Deploy program to Solana')
     .action(async () => {
-    await deployCommand();
+    await (0, deploy_js_1.deployCommand)();
 });
 program
     .command('status')
     .description('Check FORGE status and environment')
     .action(async () => {
-    await statusCommand();
+    await (0, status_js_1.statusCommand)();
 });
 // Show logo on help
 program.on('--help', () => {
-    console.log(logo);
+    console.log(ascii_js_1.logo);
     console.log('\nFORGE does not:');
     console.log('- host your code');
     console.log('- manage your keys');

@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
 // FORGE CLI Binary Entry Point
-import '../dist/cli.js';
+require('../dist/cli.js');
