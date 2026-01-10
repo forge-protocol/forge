@@ -45,9 +45,9 @@ export async function initCommand(projectName?: string, intent?: string): Promis
   // Generate program ID (simplified for demo)
   const programId = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS";
 
-  // Create Anchor.toml
+  // Create Anchor.toml with compatible version
   const anchorToml = `[toolchain]
-anchor_version = "0.29.0"
+anchor_version = "0.30.1"
 
 [features]
 seeds = false
@@ -67,9 +67,9 @@ wallet = "~/.config/solana/id.json"
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 `;
 
-  // Create Cargo.toml with latest Anchor ecosystem (0.31+)
-  let dependencies = `anchor-lang = "0.31.0"
-anchor-spl = "0.31.0"`;
+  // Create Cargo.toml with compatible Anchor ecosystem versions
+  let dependencies = `anchor-lang = "0.30.1"
+anchor-spl = "0.30.1"`;
 
   // Add CPI-specific dependencies
   if (cpiCode) {
