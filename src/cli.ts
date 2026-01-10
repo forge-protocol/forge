@@ -16,8 +16,9 @@ program
 program
   .command('init [projectName]')
   .description('Initialize a new FORGE project')
-  .action(async (projectName) => {
-    await initCommand(projectName);
+  .option('-i, --intent <intent>', 'Describe what the program should do (enables CPI generation)')
+  .action(async (projectName, options) => {
+    await initCommand(projectName, options.intent);
   });
 
 program

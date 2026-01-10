@@ -5,10 +5,21 @@ const child_process_1 = require("child_process");
 const fs_1 = require("fs");
 const path_1 = require("path");
 const ascii_js_1 = require("../ascii.js");
-async function initCommand(projectName) {
+const cpi_js_1 = require("../cpi.js");
+async function initCommand(projectName, intent) {
     console.log(ascii_js_1.logo);
     console.log('FORGE - Solana Development Platform\n');
     const name = projectName || 'forge-project';
+    // Detect CPI patterns from intent
+    let cpiCode = null;
+    if (intent) {
+        console.log(`Analyzing intent: "${intent}"`);
+        const detections = (0, cpi_js_1.detectCPI)(intent);
+        if (detections.length > 0) {
+            console.log(`Detected CPI patterns: ${detections.map(d => d.type).join(', ')}`);
+            cpiCode = (0, cpi_js_1.generateCPICode)(detections);
+        }
+    }
     // Check if Anchor is installed
     try {
         (0, child_process_1.execSync)('anchor --version', { stdio: 'pipe' });
@@ -50,7 +61,16 @@ wallet = "~/.config/solana/id.json"
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 `;
-    // Create Cargo.toml
+    // Create Cargo.toml with latest Anchor ecosystem (0.31+)
+    let dependencies = `anchor-lang = "0.31.0"
+anchor-spl = "0.31.0"`;
+    // Add CPI-specific dependencies
+    if (cpiCode) {
+        if (cpiCode.imports.some(imp => imp.includes('mpl_token_metadata'))) {
+            dependencies += `
+mpl-token-metadata = { version = "5", features = ["no-entrypoint"] }`;
+        }
+    }
     const cargoToml = `[package]
 name = "${name}"
 version = "0.1.0"
@@ -65,14 +85,24 @@ no-entrypoint = []
 no-idl = []
 no-log-ix-name = []
 cpi = ["no-entrypoint"]
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
 default = []
 
 [dependencies]
-anchor-lang = "0.29.0"
-anchor-spl = "0.29.0"
+${dependencies}
 `;
-    // Create lib.rs
-    const libRs = `use anchor_lang::prelude::*;
+    // Generate imports and CPI code
+    let imports = `use anchor_lang::prelude::*;`;
+    let cpiImports = '';
+    let cpiCodeBlock = '';
+    let extraAccounts = '';
+    if (cpiCode) {
+        cpiImports = '\n' + cpiCode.imports.join('\n');
+        cpiCodeBlock = `\n\n    ${cpiCode.code}`;
+        extraAccounts = '\n' + cpiCode.accounts.accounts.map(acc => `    ${acc},`).join('\n');
+    }
+    // Create lib.rs with CPI support
+    const libRs = `${imports}${cpiImports}
 
 declare_id!("${programId}");
 
@@ -80,14 +110,17 @@ declare_id!("${programId}");
 pub mod ${name.replace(/-/g, '_')} {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Program initialized!");
+    pub fn process_intent(ctx: Context<ProcessIntent>) -> Result<()> {
+        msg!("Processing intent...");${cpiCodeBlock}
+
+        msg!("Intent processed successfully!");
         Ok(())
     }
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct ProcessIntent {${extraAccounts}
+}
 `;
     // Write files
     (0, fs_1.writeFileSync)((0, path_1.join)(projectPath, 'Anchor.toml'), anchorToml);
