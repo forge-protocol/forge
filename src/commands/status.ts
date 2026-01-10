@@ -2,6 +2,38 @@ import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
+// Update command for self-updating FORGE
+export async function updateCommand(): Promise<void> {
+  console.log('FORGE Update Check\n');
+
+  try {
+    // Get current version
+    const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf8'));
+    const currentVersion = packageJson.version;
+    console.log(`Current version: ${currentVersion}`);
+
+    // Get latest version from npm
+    const latestVersion = execSync('npm view forge-solana-sdk version', { encoding: 'utf8' }).trim();
+    console.log(`Latest version: ${latestVersion}`);
+
+    if (currentVersion === latestVersion) {
+      console.log('✅ FORGE is up to date!');
+      return;
+    }
+
+    console.log('\n📦 Updating FORGE...');
+    execSync('npm install -g forge-solana-sdk@latest', { stdio: 'inherit' });
+
+    console.log('\n✅ FORGE updated successfully!');
+    console.log(`Updated from ${currentVersion} to ${latestVersion}`);
+    console.log('\nRestart your terminal or run: source ~/.bashrc (or equivalent)');
+
+  } catch (error) {
+    console.error('❌ Update failed. Try manually: npm install -g forge-solana-sdk@latest');
+    console.error('Error:', error instanceof Error ? error.message : String(error));
+  }
+}
+
 export async function statusCommand(): Promise<void> {
   console.log('FORGE Status\n');
 

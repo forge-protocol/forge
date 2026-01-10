@@ -44,6 +44,11 @@ Enhanced status checks include:
 forge deploy
 ```
 
+### Update FORGE
+```bash
+forge update
+```
+
 ## 📋 Prerequisites
 
 - **Node.js** 18+

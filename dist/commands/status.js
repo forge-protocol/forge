@@ -1,9 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateCommand = updateCommand;
 exports.statusCommand = statusCommand;
 const child_process_1 = require("child_process");
 const fs_1 = require("fs");
 const path_1 = require("path");
+// Update command for self-updating FORGE
+async function updateCommand() {
+    console.log('FORGE Update Check\n');
+    try {
+        // Get current version
+        const packageJson = JSON.parse((0, fs_1.readFileSync)((0, path_1.join)(__dirname, '../../package.json'), 'utf8'));
+        const currentVersion = packageJson.version;
+        console.log(`Current version: ${currentVersion}`);
+        // Get latest version from npm
+        const latestVersion = (0, child_process_1.execSync)('npm view forge-solana-sdk version', { encoding: 'utf8' }).trim();
+        console.log(`Latest version: ${latestVersion}`);
+        if (currentVersion === latestVersion) {
+            console.log('✅ FORGE is up to date!');
+            return;
+        }
+        console.log('\n📦 Updating FORGE...');
+        (0, child_process_1.execSync)('npm install -g forge-solana-sdk@latest', { stdio: 'inherit' });
+        console.log('\n✅ FORGE updated successfully!');
+        console.log(`Updated from ${currentVersion} to ${latestVersion}`);
+        console.log('\nRestart your terminal or run: source ~/.bashrc (or equivalent)');
+    }
+    catch (error) {
+        console.error('❌ Update failed. Try manually: npm install -g forge-solana-sdk@latest');
+        console.error('Error:', error instanceof Error ? error.message : String(error));
+    }
+}
 async function statusCommand() {
     console.log('FORGE Status\n');
     // Check Anchor

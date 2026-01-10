@@ -10,7 +10,7 @@ const program = new commander_1.Command();
 program
     .name('forge')
     .description('FORGE - Intent-driven app assembly on Solana')
-    .version('2.1.3');
+    .version('2.1.4');
 program
     .command('init [projectName]')
     .description('Initialize a new FORGE project')
@@ -31,9 +31,20 @@ program
     .action(async () => {
     await (0, status_js_1.statusCommand)();
 });
+program
+    .command('update')
+    .description('Update FORGE to the latest version')
+    .action(async () => {
+    await (0, status_js_1.updateCommand)();
+});
 // Show logo on help
 program.on('--help', () => {
     console.log(ascii_js_1.logo);
+    console.log('\nCommands:');
+    console.log('  init    Create new Anchor projects');
+    console.log('  status  Check environment & versions');
+    console.log('  update  Update FORGE to latest version');
+    console.log('  deploy  Deploy to Solana network');
     console.log('\nFORGE does not:');
     console.log('- host your code');
     console.log('- manage your keys');

@@ -1,6 +1,6 @@
 {
   "name": "forge-solana-sdk",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "FORGE - Intent-driven app assembly on Solana",
   "main": "dist/index.js",
   "bin": {
