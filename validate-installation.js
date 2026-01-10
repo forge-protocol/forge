@@ -132,7 +132,6 @@ function validateEnvironment() {
     info('Validating environment configuration...');
 
     const envFiles = [
-        '.env.local',
         'packages/backend/.env.local'
     ];
 
@@ -154,12 +153,12 @@ function validateStructure() {
     info('Validating project structure...');
 
     const requiredPaths = [
-        'app/page.tsx',
-        'app/layout.tsx',
         'packages/cli/src/index.ts',
         'packages/sdk/src/index.ts',
         'packages/backend/src/index.ts',
-        'docs/README.md'
+        'docs/README.md',
+        'setup.sh',
+        'validate-installation.js'
     ];
 
     requiredPaths.forEach(p => checkPath(p, `Project file: ${p}`));
@@ -198,9 +197,9 @@ function generateReport() {
     }
 
     console.log('\n📝 Next steps:');
-    console.log('1. Start development: npm run dev');
-    console.log('2. Create project: forge init my-project');
-    console.log('3. Build programs: forge build');
+    console.log('1. Create project: forge init my-project');
+    console.log('2. Build programs: cd my-project && forge build');
+    console.log('3. Start backend: npm run dev:backend');
     console.log('4. Get help: npm run health');
 
     if (score < 100) {
