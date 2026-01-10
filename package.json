@@ -7,16 +7,12 @@
     "programs/*"
   ],
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
     "setup": "./setup.sh",
     "health": "node validate-installation.js",
     "build:cli": "cd packages/cli && npm run build",
     "build:sdk": "cd packages/sdk && npm run build",
     "build:backend": "cd packages/backend && npm run build",
-    "build:all": "npm run build && npm run build:cli && npm run build:sdk && npm run build:backend",
+    "build:all": "npm run build:cli && npm run build:sdk && npm run build:backend",
     "dev:backend": "cd packages/backend && npm run dev",
     "install:all": "npm install && npm run install:cli && npm run install:sdk && npm run install:backend",
     "install:cli": "cd packages/cli && npm install",
@@ -28,20 +24,6 @@
     "test:sdk": "cd packages/sdk && npm test",
     "test:backend": "cd packages/backend && npm test"
   },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.2.6"
-  },
-  "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.2.6",
-    "@eslint/eslintrc": "^3"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
