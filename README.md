@@ -51,8 +51,35 @@ forge generate-sdk ./my-sdk
 
 ### Deploy to Solana
 ```bash
+# Deploy to devnet (default)
 forge deploy
+
+# Deploy to specific environment
+forge deploy --env devnet
+forge deploy --env mainnet-beta
+
+# Deploy to local validator
+forge deploy --env localnet
 ```
+
+**Environment Support:**
+- ✅ **devnet**: Development network (default)
+- ✅ **mainnet-beta**: Production network with safety checks
+- ✅ **localnet**: Local Solana validator
+- ✅ Auto-updates Anchor.toml with environment RPC URLs
+- ✅ Mainnet deployment requires explicit confirmation
+
+### Security Audit
+```bash
+forge audit
+```
+
+**Comprehensive Security Checks:**
+- 🔍 **Critical Issues**: Missing ownership validation, unsafe code
+- ⚠️ **High Priority**: Improper PDA derivation, missing constraints
+- 📊 **Performance**: Expensive operations, large account data
+- 🛡️ **Access Control**: Signer constraints, PDA bumps
+- 📋 **Configuration**: Wallet paths, cluster settings
 
 ### Update FORGE
 ```bash
@@ -80,6 +107,8 @@ FORGE transforms natural language intents into production-ready Solana programs.
 
 ### Core Features
 - ✅ **Intent-Driven Generation**: `"transfer 100 tokens safely"` → Modern CPI code
+- ✅ **Multi-Environment Deployment**: Deploy to devnet/mainnet/localnet with safety checks
+- ✅ **Security Audit Tools**: Automated security analysis and best practices validation
 - ✅ **Complete Anchor Workspace**: Ready-to-build projects with proper structure
 - ✅ **Client SDK Generation**: Auto-generated TypeScript SDK for program interaction
 - ✅ **Modern CPI Helpers**: `transfer_checked`, `mint_to`, PDA signers with `ctx.bumps`

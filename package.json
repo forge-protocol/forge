@@ -34,7 +34,8 @@
   },
   "homepage": "https://github.com/forge-protocol/forge#readme",
   "dependencies": {
-    "commander": "^12.0.0"
+    "commander": "^12.0.0",
+    "glob": "^10.3.10"
   },
   "devDependencies": {
     "@types/node": "^20",
