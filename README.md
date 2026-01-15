@@ -41,6 +41,14 @@ Enhanced status checks include:
 - ✅ Anchor CLI vs project version matching
 - ✅ Network configuration
 
+### Generate TypeScript SDK
+```bash
+forge generate-sdk
+
+# Or specify custom output directory
+forge generate-sdk ./my-sdk
+```
+
 ### Deploy to Solana
 ```bash
 forge deploy
@@ -73,6 +81,7 @@ FORGE transforms natural language intents into production-ready Solana programs.
 ### Core Features
 - ✅ **Intent-Driven Generation**: `"transfer 100 tokens safely"` → Modern CPI code
 - ✅ **Complete Anchor Workspace**: Ready-to-build projects with proper structure
+- ✅ **Client SDK Generation**: Auto-generated TypeScript SDK for program interaction
 - ✅ **Modern CPI Helpers**: `transfer_checked`, `mint_to`, PDA signers with `ctx.bumps`
 - ✅ **Version Compatibility**: Auto-aligns Anchor versions (CLI vs project)
 - ✅ **Production Ready**: IDL features, proper dependencies, deployment configs
@@ -105,6 +114,65 @@ token_interface::transfer_checked(
     100, // amount
     decimals, // automatic decimals lookup
 )?;
+```
+
+**Client SDK Generated:**
+```typescript
+// Auto-generated TypeScript client
+const client = new TokenTransferClient(connection, wallet);
+await client.transferTokens(amount, from, to, mint, authority);
+```
+
+## 🚀 SDK Generation
+
+FORGE can automatically generate production-ready TypeScript SDKs from your Anchor programs. The generated SDK includes:
+
+- **Type-Safe Client**: Full TypeScript client with proper types for all instructions and accounts
+- **PDA Helpers**: Utility functions to find program-derived addresses
+- **Package Template**: Ready-to-publish npm package with proper dependencies
+- **Modern Standards**: Uses latest Anchor patterns and best practices
+
+### SDK Features
+
+- ✅ **Zero-config generation** from Anchor IDL
+- ✅ **Type-safe method calls** with full IntelliSense
+- ✅ **PDA finder utilities** for program addresses
+- ✅ **Production-ready package** structure
+- ✅ **Anchor integration** with latest patterns
+
+### Generated SDK Structure
+
+```
+my-program-sdk/
+├── package.json      # Ready-to-publish npm package
+├── types.ts          # Auto-generated TypeScript types
+├── client.ts         # Program interaction client
+├── pdas.ts           # PDA finder utilities
+├── index.ts          # Main exports
+└── tsconfig.json     # TypeScript configuration
+```
+
+### Using Generated SDKs
+
+```typescript
+import { MyProgramClient } from 'my-program-sdk';
+import { Connection, Keypair } from '@solana/web3.js';
+
+// Initialize client
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+const client = new MyProgramClient(connection);
+
+// Call program methods with full type safety
+const txId = await client.myInstruction({
+  accounts: {
+    user: userPublicKey,
+    // ... other accounts
+  },
+  args: {
+    amount: 1000,
+    // ... other args
+  }
+});
 ```
 
 ## 🛠️ Troubleshooting
@@ -146,6 +214,7 @@ You must have:
 | `forge init <name>` | Create new Anchor project with optional intent |
 | `forge init <name> --intent "transfer tokens"` | Generate CPI code from natural language |
 | `forge init <name> --anchor-version 0.31.0` | Specify Anchor version for project |
+| `forge generate-sdk [dir]` | Generate TypeScript SDK from Anchor program |
 | `forge status` | Check environment, versions, and compatibility |
 | `forge update` | Update FORGE to latest version |
 | `forge deploy` | Deploy program to Solana network |
@@ -173,6 +242,44 @@ cd token-transfer
 
 anchor build  # ✅ Works immediately
 anchor test   # ✅ Ready for testing
+```
+
+### Client SDK Generation
+```bash
+# Generate program with auto-generated TypeScript SDK
+forge init token-transfer --intent "transfer tokens safely"
+
+# Project structure includes:
+# ├── programs/token-transfer/src/lib.rs  # Anchor program
+# └── client/                             # Auto-generated SDK
+#     ├── index.ts                        # Client class
+#     ├── idl.ts                          # Program IDL
+#     ├── package.json                    # SDK package
+#     └── tsconfig.json                   # TypeScript config
+
+# Build and use the SDK
+cd client && npm install && npm run build
+
+# Use in your frontend/dApp:
+import { TokenTransferClient } from './client';
+const client = new TokenTransferClient(connection, wallet);
+await client.transferTokens(amount, from, to, mint, authority);
+```
+
+### SDK Generation
+```bash
+# Generate SDK after building your program
+cd my-project
+anchor build
+forge generate-sdk
+
+# SDK appears in ./sdk/ directory
+cd sdk
+npm install
+npm run build
+
+# Publish your SDK
+npm publish
 ```
 
 ### Advanced Usage

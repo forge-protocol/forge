@@ -1,0 +1,20 @@
+{
+  "name": "test_sdk-client",
+  "version": "0.1.0",
+  "description": "Client SDK for test_sdk Solana program",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.3.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/jest": "^29.0.0"
+  }
+}

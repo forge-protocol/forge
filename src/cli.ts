@@ -5,13 +5,14 @@ import { logo } from './ascii.js';
 import { initCommand } from './commands/init.js';
 import { deployCommand } from './commands/deploy.js';
 import { statusCommand, updateCommand } from './commands/status.js';
+import { generateSdkCommand } from './commands/generate-sdk.js';
 
 const program = new Command();
 
 program
   .name('forge')
   .description('FORGE - Intent-driven app assembly on Solana')
-  .version('2.1.4');
+  .version('2.2.0');
 
 program
   .command('init [projectName]')
@@ -27,6 +28,13 @@ program
   .description('Deploy program to Solana')
   .action(async () => {
     await deployCommand();
+  });
+
+program
+  .command('generate-sdk [outputDir]')
+  .description('Generate TypeScript SDK from Anchor program')
+  .action(async (outputDir) => {
+    await generateSdkCommand(outputDir);
   });
 
 program
@@ -47,10 +55,11 @@ program
 program.on('--help', () => {
   console.log(logo);
   console.log('\nCommands:');
-  console.log('  init    Create new Anchor projects');
-  console.log('  status  Check environment & versions');
-  console.log('  update  Update FORGE to latest version');
-  console.log('  deploy  Deploy to Solana network');
+  console.log('  init          Create new Anchor projects');
+  console.log('  generate-sdk  Generate TypeScript SDK from program');
+  console.log('  status        Check environment & versions');
+  console.log('  update        Update FORGE to latest version');
+  console.log('  deploy        Deploy to Solana network');
   console.log('\nFORGE does not:');
   console.log('- host your code');
   console.log('- manage your keys');

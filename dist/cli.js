@@ -6,11 +6,12 @@ const ascii_js_1 = require("./ascii.js");
 const init_js_1 = require("./commands/init.js");
 const deploy_js_1 = require("./commands/deploy.js");
 const status_js_1 = require("./commands/status.js");
+const generate_sdk_js_1 = require("./commands/generate-sdk.js");
 const program = new commander_1.Command();
 program
     .name('forge')
     .description('FORGE - Intent-driven app assembly on Solana')
-    .version('2.1.4');
+    .version('2.2.0');
 program
     .command('init [projectName]')
     .description('Initialize a new FORGE project')
@@ -24,6 +25,12 @@ program
     .description('Deploy program to Solana')
     .action(async () => {
     await (0, deploy_js_1.deployCommand)();
+});
+program
+    .command('generate-sdk [outputDir]')
+    .description('Generate TypeScript SDK from Anchor program')
+    .action(async (outputDir) => {
+    await (0, generate_sdk_js_1.generateSdkCommand)(outputDir);
 });
 program
     .command('status')
@@ -41,10 +48,11 @@ program
 program.on('--help', () => {
     console.log(ascii_js_1.logo);
     console.log('\nCommands:');
-    console.log('  init    Create new Anchor projects');
-    console.log('  status  Check environment & versions');
-    console.log('  update  Update FORGE to latest version');
-    console.log('  deploy  Deploy to Solana network');
+    console.log('  init          Create new Anchor projects');
+    console.log('  generate-sdk  Generate TypeScript SDK from program');
+    console.log('  status        Check environment & versions');
+    console.log('  update        Update FORGE to latest version');
+    console.log('  deploy        Deploy to Solana network');
     console.log('\nFORGE does not:');
     console.log('- host your code');
     console.log('- manage your keys');

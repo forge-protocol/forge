@@ -3,6 +3,7 @@ import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { logo } from '../ascii.js';
 import { detectCPI, generateCPICode } from '../cpi.js';
+import { saveSDK, SDKConfig, Instruction, AccountField, ArgField } from '../sdk-generator.js';
 
 export async function initCommand(projectName?: string, intent?: string, anchorVersion?: string): Promise<void> {
   console.log(logo);
@@ -12,9 +13,10 @@ export async function initCommand(projectName?: string, intent?: string, anchorV
 
   // Detect CPI patterns from intent
   let cpiCode = null;
+  let detections: any[] = [];
   if (intent) {
     console.log(`Analyzing intent: "${intent}"`);
-    const detections = detectCPI(intent);
+    detections = detectCPI(intent);
     if (detections.length > 0) {
       console.log(`Detected CPI patterns: ${detections.map(d => d.type).join(', ')}`);
       cpiCode = generateCPICode(detections);
@@ -161,9 +163,72 @@ pub struct ProcessIntent {${extraAccounts}
   writeFileSync(join(projectPath, 'programs', name, 'Cargo.toml'), cargoToml);
   writeFileSync(join(projectPath, 'programs', name, 'src', 'lib.rs'), libRs);
 
+  // Generate Client SDK if CPI code was created
+  if (cpiCode) {
+    console.log('🔧 Generating TypeScript client SDK...');
+
+    const primaryDetection = detections[0];
+    const sdkConfig: SDKConfig = {
+      programName: name.replace(/-/g, '_'),
+      programId: programId,
+      instructions: [{
+        name: 'processIntent',
+        accounts: [], // Will be populated based on CPI type
+        args: [],
+        cpiType: primaryDetection?.type
+      }],
+      accounts: [],
+      events: []
+    };
+
+    // Add accounts based on CPI type
+    if (primaryDetection?.type === 'token_transfer') {
+      sdkConfig.instructions[0].accounts = [
+        { name: 'from', type: 'InterfaceAccount<TokenAccount>', isMut: true, isSigner: false },
+        { name: 'to', type: 'InterfaceAccount<TokenAccount>', isMut: true, isSigner: false },
+        { name: 'mint', type: 'InterfaceAccount<Mint>', isMut: false, isSigner: false },
+        { name: 'authority', type: 'Signer', isMut: false, isSigner: true }
+      ];
+      sdkConfig.instructions[0].args = [{ name: 'amount', type: 'u64' }];
+    } else if (primaryDetection?.type === 'token_mint') {
+      sdkConfig.instructions[0].accounts = [
+        { name: 'mint', type: 'InterfaceAccount<Mint>', isMut: true, isSigner: false },
+        { name: 'to', type: 'InterfaceAccount<TokenAccount>', isMut: true, isSigner: false },
+        { name: 'mintAuthority', type: 'Signer', isMut: false, isSigner: true }
+      ];
+      sdkConfig.instructions[0].args = [{ name: 'amount', type: 'u64' }];
+    } else if (primaryDetection?.type === 'create_ata') {
+      sdkConfig.instructions[0].accounts = [
+        { name: 'ata', type: 'InterfaceAccount<TokenAccount>', isMut: true, isSigner: false },
+        { name: 'mint', type: 'InterfaceAccount<Mint>', isMut: false, isSigner: false },
+        { name: 'authority', type: 'UncheckedAccount', isMut: false, isSigner: false },
+        { name: 'payer', type: 'Signer', isMut: true, isSigner: true }
+      ];
+    } else if (primaryDetection?.type === 'create_metadata') {
+      sdkConfig.instructions[0].accounts = [
+        { name: 'metadata', type: 'UncheckedAccount', isMut: true, isSigner: false },
+        { name: 'mint', type: 'InterfaceAccount<Mint>', isMut: false, isSigner: false },
+        { name: 'mintAuthority', type: 'Signer', isMut: false, isSigner: true },
+        { name: 'updateAuthority', type: 'UncheckedAccount', isMut: false, isSigner: false },
+        { name: 'payer', type: 'Signer', isMut: true, isSigner: true }
+      ];
+      sdkConfig.instructions[0].args = [
+        { name: 'name', type: 'String' },
+        { name: 'symbol', type: 'String' },
+        { name: 'uri', type: 'String' }
+      ];
+    }
+
+    saveSDK(sdkConfig, projectPath);
+    console.log('✅ Client SDK generated!');
+  }
+
   console.log('✅ Project created successfully!');
   console.log(`\nNext steps:`);
   console.log(`  cd ${name}`);
   console.log(`  anchor build`);
   console.log(`  anchor test`);
+  if (cpiCode) {
+    console.log(`  cd client && npm install && npm run build  # Build the client SDK`);
+  }
 }
