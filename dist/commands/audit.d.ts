@@ -1,2 +1,2 @@
-export declare function auditCommand(): Promise<void>;
+export declare function auditCommand(deep?: boolean): Promise<void>;
 //# sourceMappingURL=audit.d.ts.map

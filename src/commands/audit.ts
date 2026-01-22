@@ -9,8 +9,8 @@ interface AuditResult {
   recommendation: string;
 }
 
-export async function auditCommand(): Promise<void> {
-  console.log('🔍 Running FORGE Security Audit...\n');
+export async function auditCommand(deep: boolean = false): Promise<void> {
+  console.log(`🔍 Running FORGE Security Audit${deep ? ' (Deep Analysis)' : ''}...\n`);
 
   const results: AuditResult[] = [];
 
@@ -39,6 +39,11 @@ export async function auditCommand(): Promise<void> {
 
     console.log('🛡️  Checking access control...');
     results.push(...await checkAccessControl());
+
+    if (deep) {
+      console.log('🔬 Running deep analysis...');
+      results.push(...await deepAnalysis());
+    }
 
     // Display results
     displayResults(results);
@@ -226,6 +231,68 @@ async function checkAccessControl(): Promise<AuditResult[]> {
           description: 'PDA account missing bump field for validation',
           location: file,
           recommendation: 'Add bump field to PDA account constraints'
+        });
+      }
+    }
+
+  } catch (error) {
+    // Ignore glob errors
+  }
+
+  return results;
+}
+
+async function deepAnalysis(): Promise<AuditResult[]> {
+  const results: AuditResult[] = [];
+
+  try {
+    const { glob } = require('glob');
+    const rustFiles = await glob('programs/**/*.rs');
+
+    for (const file of rustFiles) {
+      const content = readFileSync(file, 'utf8');
+
+      // Reentrancy detection
+      if (content.includes('invoke') && content.includes('invoke_signed')) {
+        results.push({
+          severity: 'high',
+          title: 'Potential Reentrancy Risk',
+          description: 'Multiple invoke calls detected - potential reentrancy vulnerability',
+          location: file,
+          recommendation: 'Use checks-effects-interactions pattern and add reentrancy guards'
+        });
+      }
+
+      // Integer overflow in loops
+      if (content.includes('for') && content.includes('+') && !content.includes('checked_')) {
+        results.push({
+          severity: 'medium',
+          title: 'Potential Loop Overflow',
+          description: 'Loop counter may overflow without checks',
+          location: file,
+          recommendation: 'Add bounds checking for loop iterations'
+        });
+      }
+
+      // Missing error handling
+      if (content.includes('unwrap()') || content.includes('expect(')) {
+        results.push({
+          severity: 'medium',
+          title: 'Unsafe Error Handling',
+          description: 'Using unwrap() or expect() may cause program to panic',
+          location: file,
+          recommendation: 'Use proper error handling with Result types'
+        });
+      }
+
+      // Direct account data manipulation
+      if (content.includes('try_borrow_mut') && !content.includes('require!')) {
+        results.push({
+          severity: 'high',
+          title: 'Unvalidated Account Mutation',
+          description: 'Account data mutated without validation',
+          location: file,
+          recommendation: 'Add validation checks before mutating account data'
         });
       }
     }

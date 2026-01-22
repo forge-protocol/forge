@@ -1,13 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initCommand = initCommand;
+exports.listTemplatesCommand = listTemplatesCommand;
 const child_process_1 = require("child_process");
 const fs_1 = require("fs");
 const path_1 = require("path");
 const ascii_js_1 = require("../ascii.js");
 const cpi_js_1 = require("../cpi.js");
 const sdk_generator_js_1 = require("../sdk-generator.js");
-async function initCommand(projectName, intent, anchorVersion) {
+const index_js_1 = require("../templates/index.js");
+const token_program_js_1 = require("../templates/token-program.js");
+async function initCommand(projectName, intent, anchorVersion, templateId) {
     console.log(ascii_js_1.logo);
     console.log('FORGE - Solana Development Platform\n');
     const name = projectName || 'forge-project';
@@ -50,6 +53,18 @@ async function initCommand(projectName, intent, anchorVersion) {
     }
     catch (error) {
         console.warn('⚠️  Could not check Rust version. Ensure Rust 1.85.0+ is installed.');
+    }
+    // Handle template if provided
+    if (templateId) {
+        const template = (0, index_js_1.getTemplate)(templateId);
+        if (!template) {
+            console.error(`❌ Template "${templateId}" not found`);
+            console.error(`Available templates: ${index_js_1.templates.map(t => t.id).join(', ')}`);
+            process.exit(1);
+        }
+        console.log(`📚 Using template: ${template.name}`);
+        console.log(`   ${template.description}\n`);
+        return await initFromTemplate(name, template, anchorVersion || '0.32.1');
     }
     console.log(`Initializing ${name}...\n`);
     // Create project directory
@@ -216,5 +231,77 @@ pub struct ProcessIntent {${extraAccounts}
     if (cpiCode) {
         console.log(`  cd client && npm install && npm run build  # Build the client SDK`);
     }
+}
+async function initFromTemplate(projectName, template, anchorVersion) {
+    const projectPath = (0, path_1.join)(process.cwd(), projectName);
+    if ((0, fs_1.existsSync)(projectPath)) {
+        console.error(`❌ Directory ${projectName} already exists`);
+        process.exit(1);
+    }
+    (0, fs_1.mkdirSync)(projectPath, { recursive: true });
+    (0, fs_1.mkdirSync)((0, path_1.join)(projectPath, 'programs', projectName, 'src'), { recursive: true });
+    const programId = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS";
+    // Generate template files based on template ID
+    let templateFiles = [];
+    switch (template.id) {
+        case 'token-program':
+            templateFiles = (0, token_program_js_1.generateTokenProgramTemplate)(projectName, anchorVersion);
+            break;
+        default:
+            console.error(`❌ Template "${template.id}" generator not yet implemented`);
+            process.exit(1);
+    }
+    // Create Anchor.toml
+    const anchorToml = `[toolchain]
+anchor_version = "${anchorVersion}"
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+${projectName} = "${programId}"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+`;
+    (0, fs_1.writeFileSync)((0, path_1.join)(projectPath, 'Anchor.toml'), anchorToml);
+    // Write template files
+    for (const file of templateFiles) {
+        const filePath = (0, path_1.join)(projectPath, file.path);
+        const dir = (0, path_1.join)(filePath, '..');
+        (0, fs_1.mkdirSync)(dir, { recursive: true });
+        (0, fs_1.writeFileSync)(filePath, file.content);
+    }
+    console.log('✅ Template project created successfully!');
+    console.log(`\nNext steps:`);
+    console.log(`  cd ${projectName}`);
+    console.log(`  anchor build`);
+    console.log(`  anchor test`);
+    console.log(`\n📚 Template features: ${template.features.join(', ')}`);
+}
+async function listTemplatesCommand() {
+    console.log('📚 Available FORGE Templates\n');
+    const categories = ['token', 'nft', 'dao', 'defi', 'utility'];
+    for (const category of categories) {
+        const categoryTemplates = index_js_1.templates.filter(t => t.category === category);
+        if (categoryTemplates.length > 0) {
+            console.log(`📦 ${category.toUpperCase()}:`);
+            for (const template of categoryTemplates) {
+                console.log(`   ${template.id.padEnd(20)} - ${template.name}`);
+                console.log(`   ${' '.repeat(22)}${template.description}`);
+                console.log(`   ${' '.repeat(22)}Features: ${template.features.join(', ')}\n`);
+            }
+        }
+    }
+    console.log('💡 Usage: forge init <project-name> --template <template-id>');
+    console.log('   Example: forge init my-token --template token-program');
 }
 //# sourceMappingURL=init.js.map

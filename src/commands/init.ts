@@ -4,8 +4,10 @@ import { join } from 'path';
 import { logo } from '../ascii.js';
 import { detectCPI, generateCPICode } from '../cpi.js';
 import { saveSDK, SDKConfig, Instruction, AccountField, ArgField } from '../sdk-generator.js';
+import { templates, getTemplate } from '../templates/index.js';
+import { generateTokenProgramTemplate } from '../templates/token-program.js';
 
-export async function initCommand(projectName?: string, intent?: string, anchorVersion?: string): Promise<void> {
+export async function initCommand(projectName?: string, intent?: string, anchorVersion?: string, templateId?: string): Promise<void> {
   console.log(logo);
   console.log('FORGE - Solana Development Platform\n');
 
@@ -51,6 +53,21 @@ export async function initCommand(projectName?: string, intent?: string, anchorV
     }
   } catch (error) {
     console.warn('⚠️  Could not check Rust version. Ensure Rust 1.85.0+ is installed.');
+  }
+
+  // Handle template if provided
+  if (templateId) {
+    const template = getTemplate(templateId);
+    if (!template) {
+      console.error(`❌ Template "${templateId}" not found`);
+      console.error(`Available templates: ${templates.map(t => t.id).join(', ')}`);
+      process.exit(1);
+    }
+
+    console.log(`📚 Using template: ${template.name}`);
+    console.log(`   ${template.description}\n`);
+
+    return await initFromTemplate(name, template, anchorVersion || '0.32.1');
   }
 
   console.log(`Initializing ${name}...\n`);
@@ -231,4 +248,89 @@ pub struct ProcessIntent {${extraAccounts}
   if (cpiCode) {
     console.log(`  cd client && npm install && npm run build  # Build the client SDK`);
   }
+}
+
+async function initFromTemplate(projectName: string, template: any, anchorVersion: string): Promise<void> {
+  const projectPath = join(process.cwd(), projectName);
+  if (existsSync(projectPath)) {
+    console.error(`❌ Directory ${projectName} already exists`);
+    process.exit(1);
+  }
+
+  mkdirSync(projectPath, { recursive: true });
+  mkdirSync(join(projectPath, 'programs', projectName, 'src'), { recursive: true });
+
+  const programId = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS";
+
+  // Generate template files based on template ID
+  let templateFiles: Array<{path: string, content: string}> = [];
+
+  switch (template.id) {
+    case 'token-program':
+      templateFiles = generateTokenProgramTemplate(projectName, anchorVersion);
+      break;
+    default:
+      console.error(`❌ Template "${template.id}" generator not yet implemented`);
+      process.exit(1);
+  }
+
+  // Create Anchor.toml
+  const anchorToml = `[toolchain]
+anchor_version = "${anchorVersion}"
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+${projectName} = "${programId}"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+`;
+
+  writeFileSync(join(projectPath, 'Anchor.toml'), anchorToml);
+
+  // Write template files
+  for (const file of templateFiles) {
+    const filePath = join(projectPath, file.path);
+    const dir = join(filePath, '..');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(filePath, file.content);
+  }
+
+  console.log('✅ Template project created successfully!');
+  console.log(`\nNext steps:`);
+  console.log(`  cd ${projectName}`);
+  console.log(`  anchor build`);
+  console.log(`  anchor test`);
+  console.log(`\n📚 Template features: ${template.features.join(', ')}`);
+}
+
+export async function listTemplatesCommand(): Promise<void> {
+  console.log('📚 Available FORGE Templates\n');
+
+  const categories = ['token', 'nft', 'dao', 'defi', 'utility'] as const;
+  
+  for (const category of categories) {
+    const categoryTemplates = templates.filter(t => t.category === category);
+    if (categoryTemplates.length > 0) {
+      console.log(`📦 ${category.toUpperCase()}:`);
+      for (const template of categoryTemplates) {
+        console.log(`   ${template.id.padEnd(20)} - ${template.name}`);
+        console.log(`   ${' '.repeat(22)}${template.description}`);
+        console.log(`   ${' '.repeat(22)}Features: ${template.features.join(', ')}\n`);
+      }
+    }
+  }
+
+  console.log('💡 Usage: forge init <project-name> --template <template-id>');
+  console.log('   Example: forge init my-token --template token-program');
 }

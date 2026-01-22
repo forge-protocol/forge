@@ -24,8 +24,17 @@ forge init my-project
 # With intent-driven CPI generation
 forge init my-project --intent "transfer 100 tokens safely"
 
+# With program template
+forge init my-token --template token-program
+
 # With specific Anchor version
 forge init my-project --anchor-version 0.31.0
+
+# Interactive setup wizard
+forge interactive
+
+# List available templates
+forge list-templates
 
 cd my-project
 ```
@@ -119,6 +128,160 @@ forge verify
 - ✅ Generate Solana Explorer verification links
 - ✅ Save local verification record
 
+### Program Templates
+```bash
+# List all available templates
+forge list-templates
+
+# Create project from template
+forge init my-token --template token-program
+forge init my-nft --template nft-marketplace
+forge init my-dao --template dao-governance
+```
+
+**Available Templates:**
+- 🪙 **token-program**: Complete SPL token with mint/transfer/burn
+- 🖼️ **nft-marketplace**: NFT marketplace with royalties
+- 🗳️ **dao-governance**: DAO with proposals and voting
+- 💎 **staking-rewards**: Token staking with rewards
+- 🔄 **escrow-swap**: Trustless token swap
+- ⏰ **token-vesting**: Time-based vesting schedules
+
+### Program Upgrade & Migration
+```bash
+# Upgrade to latest Anchor version
+forge upgrade
+
+# Upgrade to specific version
+forge upgrade 0.32.1
+
+# Migration assistant (with additional checks)
+forge migrate 0.32.1
+```
+
+### Performance Analysis
+```bash
+forge profile
+```
+
+**Performance Insights:**
+- ⚡ Compute unit usage analysis
+- 💰 Cost estimation per transaction
+- 🎯 Optimization suggestions
+- 📊 Gas usage reports
+
+### Program Monitoring
+```bash
+forge monitor
+```
+
+**Monitoring Features:**
+- 📈 Real-time transaction volume
+- 🔍 Error rate tracking
+- 👥 Active user analytics
+- 📊 Account growth metrics
+
+### Interactive Setup
+```bash
+forge interactive
+```
+
+**Guided Wizard:**
+- 📦 Project name selection
+- 📚 Template selection
+- 💡 Intent-driven generation
+- 🔧 Anchor version configuration
+
+### Documentation Generation
+```bash
+forge docs
+```
+
+**Auto-Generated Docs:**
+- 📖 API documentation from IDL
+- 📋 Instruction reference
+- 🏗️ Account structure docs
+- 🔗 Integration examples
+
+### Code Quality Analysis
+```bash
+forge quality
+```
+
+**Quality Metrics:**
+- 📊 Code complexity scoring
+- 📏 Function/struct counts
+- ✅ Maintainability assessment
+- 💡 Refactoring recommendations
+
+### Cost Calculator
+```bash
+forge cost
+```
+
+**Cost Analysis:**
+- 💾 Deployment costs (~2.5 SOL)
+- ⚡ Per-transaction fees
+- 📈 Monthly operation estimates
+- 💡 Optimization tips
+
+### Keypair Management
+```bash
+# Generate new keypair
+forge keypair generate
+
+# Generate to specific path
+forge keypair generate ./my-keypair.json
+
+# Import keypair
+forge keypair import ./keypair.json
+
+# Show keypair info
+forge keypair info
+```
+
+### Network Management
+```bash
+# Switch network
+forge network switch devnet
+forge network switch mainnet-beta
+
+# Check network status
+forge network status
+
+# Test RPC connection
+forge network test
+```
+
+### Program Search
+```bash
+# Search for programs
+forge search token program
+forge search nft marketplace
+```
+
+### Analytics Dashboard
+```bash
+forge analytics
+```
+
+**Analytics Links:**
+- 🔗 Solana Explorer integration
+- 📊 Transaction volume tracking
+- 📈 User activity metrics
+
+### CI/CD Integration
+```bash
+# Generate GitHub Actions workflow
+forge ci github
+```
+
+**Generated Workflow:**
+- ✅ Auto-test on push/PR
+- ✅ Security audit checks
+- ✅ Code quality validation
+- ✅ Auto-deploy to devnet
+
 ### Update FORGE
 ```bash
 forge update
@@ -145,10 +308,22 @@ FORGE transforms natural language intents into production-ready Solana programs.
 
 ### Core Features
 - ✅ **Intent-Driven Generation**: `"transfer 100 tokens safely"` → Modern CPI code
+- ✅ **Program Templates Library**: 6 battle-tested templates (Token, NFT, DAO, Staking, Escrow, Vesting)
 - ✅ **Automated Testing Framework**: Comprehensive test suites with security validation
 - ✅ **Contract Verification**: Source code transparency on Solana Explorer
 - ✅ **Multi-Environment Deployment**: Deploy to devnet/mainnet/localnet with safety checks
-- ✅ **Security Audit Tools**: Automated security analysis and best practices validation
+- ✅ **Security Audit Tools**: Automated security analysis (--deep for advanced checks)
+- ✅ **Program Upgrade System**: Version management and migration assistance
+- ✅ **Performance Profiler**: Compute unit analysis and optimization suggestions
+- ✅ **Program Monitoring**: Real-time analytics and activity tracking
+- ✅ **Interactive CLI**: Guided project setup wizard
+- ✅ **Documentation Generator**: Auto-generate API docs from IDL
+- ✅ **Code Quality Metrics**: Complexity analysis and maintainability scoring
+- ✅ **Cost Calculator**: Deployment and operation cost estimation
+- ✅ **Keypair Management**: Secure keypair generation and import utilities
+- ✅ **Network Utilities**: Switch between networks, test connections
+- ✅ **Program Search**: Find verified programs and best practices
+- ✅ **CI/CD Integration**: GitHub Actions workflow generation
 - ✅ **Complete Anchor Workspace**: Ready-to-build projects with proper structure
 - ✅ **Client SDK Generation**: Auto-generated TypeScript SDK for program interaction
 - ✅ **Modern CPI Helpers**: `transfer_checked`, `mint_to`, PDA signers with `ctx.bumps`
