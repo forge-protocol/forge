@@ -8,10 +8,11 @@ const child_process_1 = require("child_process");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const util_1 = require("util");
+const sdk_generator_v2_js_1 = require("../sdk-generator-v2.js");
 const mkdir = (0, util_1.promisify)(fs_1.default.mkdir);
 const writeFile = (0, util_1.promisify)(fs_1.default.writeFile);
-async function generateSdkCommand(outputDir) {
-    console.log('🔧 Generating TypeScript SDK...\n');
+async function generateSdkCommand(outputDir, v2 = false) {
+    console.log(`🔧 Generating TypeScript SDK${v2 ? ' (Web3.js v2)' : ''}...\n`);
     try {
         // Check if we're in an Anchor project
         if (!fs_1.default.existsSync('Anchor.toml')) {
@@ -49,9 +50,19 @@ async function generateSdkCommand(outputDir) {
             idlPath: idlFilePath,
             outputDir: targetDir,
         };
-        await generateSdk(config, idl);
+        if (v2) {
+            await (0, sdk_generator_v2_js_1.generateSdkV2)(config, idl);
+        }
+        else {
+            await generateSdk(config, idl);
+        }
         console.log(`\n✅ SDK generated successfully in ${targetDir}/`);
-        console.log('📦 Install dependencies: npm install @solana/web3.js @coral-xyz/anchor');
+        if (v2) {
+            console.log('📦 Install dependencies: npm install @solana/web3.js@2.0.0');
+        }
+        else {
+            console.log('📦 Install dependencies: npm install @solana/web3.js @coral-xyz/anchor');
+        }
         console.log('🚀 Ready to use!');
     }
     catch (error) {

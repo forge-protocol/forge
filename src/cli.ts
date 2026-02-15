@@ -28,7 +28,7 @@ const program = new Command();
 program
   .name('forge')
   .description('FORGE - Intent-driven app assembly on Solana')
-  .version('3.0.0');
+  .version('3.2.0');
 
 program
   .command('init [projectName]')
@@ -171,8 +171,9 @@ program
 program
   .command('generate-sdk [outputDir]')
   .description('Generate TypeScript SDK from Anchor program')
-  .action(async (outputDir) => {
-    await generateSdkCommand(outputDir);
+  .option('--v2', 'Generate modern Web3.js v2 functional SDK')
+  .action(async (outputDir, options) => {
+    await generateSdkCommand(outputDir, options.v2);
   });
 
 program

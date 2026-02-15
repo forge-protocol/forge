@@ -150,8 +150,9 @@ program
 program
     .command('generate-sdk [outputDir]')
     .description('Generate TypeScript SDK from Anchor program')
-    .action(async (outputDir) => {
-    await (0, generate_sdk_js_1.generateSdkCommand)(outputDir);
+    .option('--v2', 'Generate modern Web3.js v2 functional SDK')
+    .action(async (outputDir, options) => {
+    await (0, generate_sdk_js_1.generateSdkCommand)(outputDir, options.v2);
 });
 program
     .command('status')

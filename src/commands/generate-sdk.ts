@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import { generateSdkV2 } from '../sdk-generator-v2.js';
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -36,8 +37,8 @@ interface SdkConfig {
   outputDir: string;
 }
 
-export async function generateSdkCommand(outputDir?: string): Promise<void> {
-  console.log('🔧 Generating TypeScript SDK...\n');
+export async function generateSdkCommand(outputDir?: string, v2: boolean = false): Promise<void> {
+  console.log(`🔧 Generating TypeScript SDK${v2 ? ' (Web3.js v2)' : ''}...\n`);
 
   try {
     // Check if we're in an Anchor project
@@ -74,7 +75,6 @@ export async function generateSdkCommand(outputDir?: string): Promise<void> {
     // Parse IDL and generate SDK
     const idlContent = fs.readFileSync(idlFilePath, 'utf8');
     const idl: IDL = JSON.parse(idlContent);
-
     const config: SdkConfig = {
       programName: getProgramName(),
       programId: getProgramId(),
@@ -82,10 +82,18 @@ export async function generateSdkCommand(outputDir?: string): Promise<void> {
       outputDir: targetDir,
     };
 
-    await generateSdk(config, idl);
+    if (v2) {
+      await generateSdkV2(config as any, idl);
+    } else {
+      await generateSdk(config, idl);
+    }
 
     console.log(`\n✅ SDK generated successfully in ${targetDir}/`);
-    console.log('📦 Install dependencies: npm install @solana/web3.js @coral-xyz/anchor');
+    if (v2) {
+      console.log('📦 Install dependencies: npm install @solana/web3.js@2.0.0');
+    } else {
+      console.log('📦 Install dependencies: npm install @solana/web3.js @coral-xyz/anchor');
+    }
     console.log('🚀 Ready to use!');
 
   } catch (error: any) {
