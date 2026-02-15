@@ -13,6 +13,7 @@ import { verifyCommand } from './commands/verify.js';
 import { upgradeCommand } from './commands/upgrade.js';
 import { profileCommand } from './commands/profile.js';
 import { monitorCommand } from './commands/monitor.js';
+import { simulateCommand } from './commands/simulate.js';
 import { interactiveCommand } from './commands/interactive.js';
 import { docsCommand } from './commands/docs.js';
 import { migrateCommand } from './commands/migrate.js';
@@ -29,7 +30,7 @@ const program = new Command();
 program
   .name('forge')
   .description('FORGE - Intent-driven app assembly on Solana')
-  .version('3.3.0');
+  .version('3.4.0');
 
 program
   .command('init [projectName]')
@@ -90,6 +91,13 @@ program
   .description('Analyze program performance and compute unit usage')
   .action(async () => {
     await profileCommand();
+  });
+
+program
+  .command('simulate [instruction]')
+  .description('Simulate a program instruction to preview logs and CU usage')
+  .action(async (instruction) => {
+    await simulateCommand(instruction);
   });
 
 program
@@ -202,6 +210,7 @@ program.on('--help', () => {
   console.log('  test          Generate and run comprehensive tests');
   console.log('  audit         Run security audit (--deep for advanced)');
   console.log('  harden        Apply security safeguards to your project');
+  console.log('  simulate      Simulate instructions to preview logs and CUs');
   console.log('  quality       Analyze code quality metrics');
   console.log('  profile       Analyze performance and compute units');
   console.log('  docs          Generate API documentation');

@@ -180,6 +180,20 @@ forge migrate 0.32.1
 forge profile
 ```
 
+### Instruction Simulation
+```bash
+forge simulate
+
+# Simulate specific instruction
+forge simulate process_intent
+```
+
+**Simulation Insights:**
+- ⚡ **Compute Units**: Exact CU usage for the instruction
+- 📜 **Prettified Logs**: All `msg!` outputs from the program
+- 💎 **Return Values**: Capture instruction return data
+- 🔮 **Dry-run**: Test logic without any SOL cost or deployment
+
 **Performance Insights:**
 - ⚡ Compute unit usage analysis
 - 💰 Cost estimation per transaction
@@ -342,6 +356,7 @@ FORGE transforms natural language intents into production-ready Solana programs.
 - ✅ **CI/CD Integration**: GitHub Actions workflow generation
 - ✅ **Fair-Launch Support**: Integrated Moonshot & Pump.fun launching
 - ✅ **Security Hardening**: Auto-inject safeguards with `forge harden`
+- ✅ **Instruction Simulator**: Preview logs and CUs with `forge simulate`
 - ✅ **Complete Anchor Workspace**: Ready-to-build projects with proper structure
 - ✅ **Client SDK Generation**: Auto-generated Legacy & **Web3.js v2** SDKs
 - ✅ **Modern CPI Helpers**: `transfer_checked`, `mint_to`, PDA signers with `ctx.bumps`
@@ -486,6 +501,7 @@ You must have:
 | `forge update` | Update FORGE to latest version |
 | `forge deploy` | Deploy program to Solana network |
 | `forge harden` | Apply security safeguards to your project |
+| `forge simulate` | Preview logs and CU usage for instructions |
 
 ## 📖 Examples
 

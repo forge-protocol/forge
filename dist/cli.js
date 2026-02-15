@@ -13,6 +13,7 @@ const verify_js_1 = require("./commands/verify.js");
 const upgrade_js_1 = require("./commands/upgrade.js");
 const profile_js_1 = require("./commands/profile.js");
 const monitor_js_1 = require("./commands/monitor.js");
+const simulate_js_1 = require("./commands/simulate.js");
 const interactive_js_1 = require("./commands/interactive.js");
 const docs_js_1 = require("./commands/docs.js");
 const migrate_js_1 = require("./commands/migrate.js");
@@ -27,7 +28,7 @@ const program = new commander_1.Command();
 program
     .name('forge')
     .description('FORGE - Intent-driven app assembly on Solana')
-    .version('3.3.0');
+    .version('3.4.0');
 program
     .command('init [projectName]')
     .description('Initialize a new FORGE project')
@@ -80,6 +81,12 @@ program
     .description('Analyze program performance and compute unit usage')
     .action(async () => {
     await (0, profile_js_1.profileCommand)();
+});
+program
+    .command('simulate [instruction]')
+    .description('Simulate a program instruction to preview logs and CU usage')
+    .action(async (instruction) => {
+    await (0, simulate_js_1.simulateCommand)(instruction);
 });
 program
     .command('monitor')
@@ -177,6 +184,7 @@ program.on('--help', () => {
     console.log('  test          Generate and run comprehensive tests');
     console.log('  audit         Run security audit (--deep for advanced)');
     console.log('  harden        Apply security safeguards to your project');
+    console.log('  simulate      Simulate instructions to preview logs and CUs');
     console.log('  quality       Analyze code quality metrics');
     console.log('  profile       Analyze performance and compute units');
     console.log('  docs          Generate API documentation');
