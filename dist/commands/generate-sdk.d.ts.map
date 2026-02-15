@@ -1,1 +1,1 @@
-{"version":3,"file":"generate-sdk.d.ts","sourceRoot":"","sources":["../../src/commands/generate-sdk.ts"],"names":[],"mappings":"AAsCA,wBAAsB,kBAAkB,CAAC,SAAS,CAAC,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC,CAyD1E"}
+{"version":3,"file":"generate-sdk.d.ts","sourceRoot":"","sources":["../../src/commands/generate-sdk.ts"],"names":[],"mappings":"AAuCA,wBAAsB,kBAAkB,CAAC,SAAS,CAAC,EAAE,MAAM,EAAE,EAAE,GAAE,OAAe,GAAG,OAAO,CAAC,IAAI,CAAC,CAgE/F"}

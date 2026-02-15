@@ -56,6 +56,9 @@ forge generate-sdk
 
 # Or specify custom output directory
 forge generate-sdk ./my-sdk
+
+# Generate modern Web3.js v2 SDK (functional, piped API)
+forge generate-sdk --v2
 ```
 
 ### Deploy to Solana
@@ -328,7 +331,7 @@ FORGE transforms natural language intents into production-ready Solana programs.
 - ✅ **CI/CD Integration**: GitHub Actions workflow generation
 - ✅ **Fair-Launch Support**: Integrated Moonshot & Pump.fun launching
 - ✅ **Complete Anchor Workspace**: Ready-to-build projects with proper structure
-- ✅ **Client SDK Generation**: Auto-generated TypeScript SDK for program interaction
+- ✅ **Client SDK Generation**: Auto-generated Legacy & **Web3.js v2** SDKs
 - ✅ **Modern CPI Helpers**: `transfer_checked`, `mint_to`, PDA signers with `ctx.bumps`
 - ✅ **Version Compatibility**: Auto-aligns Anchor versions (CLI vs project)
 - ✅ **Production Ready**: IDL features, proper dependencies, deployment configs
@@ -378,6 +381,11 @@ FORGE can automatically generate production-ready TypeScript SDKs from your Anch
 - **PDA Helpers**: Utility functions to find program-derived addresses
 - **Package Template**: Ready-to-publish npm package with proper dependencies
 - **Modern Standards**: Uses latest Anchor patterns and best practices
+- **Web3.js v2 Support**: Functional, piped API for better performance and tree-shaking
+
+### SDK Styles
+- **Legacy (default)**: Anchor-based class-based client
+- **Web3.js v2 (`--v2`)**: Functional client using the latest Solana standards
 
 ### SDK Features
 

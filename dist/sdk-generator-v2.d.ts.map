@@ -1,0 +1,1 @@
+{"version":3,"file":"sdk-generator-v2.d.ts","sourceRoot":"","sources":["../src/sdk-generator-v2.ts"],"names":[],"mappings":"AAGA,MAAM,WAAW,SAAS;IACtB,WAAW,EAAE,MAAM,CAAC;IACpB,SAAS,EAAE,MAAM,CAAC;IAClB,SAAS,EAAE,MAAM,CAAC;CACrB;AAED,wBAAsB,aAAa,CAAC,MAAM,EAAE,SAAS,EAAE,GAAG,EAAE,GAAG,GAAG,OAAO,CAAC,IAAI,CAAC,CAmF9E"}
