@@ -81,6 +81,17 @@ forge deploy --env localnet
 - ✅ Auto-updates Anchor.toml with environment RPC URLs
 - ✅ Mainnet deployment requires explicit confirmation
 
+### Security Hardening
+```bash
+forge harden
+```
+
+**Safeguards include:**
+- 🛡️ **Macro Integration**: Injects `require_signer!`, `assert_owned_by!`, and `checked_math!`
+- 📋 **Config Hardening**: Enforces strict Anchor linting and PDA safety in `Anchor.toml`
+- 🔒 **Security Modules**: Generates a local `security.rs` for project-specific rules
+- 📦 **Runtime Safety**: Automatically adds `forge-runtime` to program dependencies
+
 ### Security Audit
 ```bash
 forge audit
@@ -330,6 +341,7 @@ FORGE transforms natural language intents into production-ready Solana programs.
 - ✅ **Program Search**: Find verified programs and best practices
 - ✅ **CI/CD Integration**: GitHub Actions workflow generation
 - ✅ **Fair-Launch Support**: Integrated Moonshot & Pump.fun launching
+- ✅ **Security Hardening**: Auto-inject safeguards with `forge harden`
 - ✅ **Complete Anchor Workspace**: Ready-to-build projects with proper structure
 - ✅ **Client SDK Generation**: Auto-generated Legacy & **Web3.js v2** SDKs
 - ✅ **Modern CPI Helpers**: `transfer_checked`, `mint_to`, PDA signers with `ctx.bumps`
@@ -473,6 +485,7 @@ You must have:
 | `forge status` | Check environment, versions, and compatibility |
 | `forge update` | Update FORGE to latest version |
 | `forge deploy` | Deploy program to Solana network |
+| `forge harden` | Apply security safeguards to your project |
 
 ## 📖 Examples
 

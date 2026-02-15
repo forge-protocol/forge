@@ -20,6 +20,46 @@ pub struct ProgramStatus {
     pub lamports: Option<u64>,
 }
 
+// --- FORGE SECURITY MACROS ---
+
+/// Ensures an account is a signer
+#[macro_export]
+macro_rules! require_signer {
+    ($account:expr) => {
+        if !$account.is_signer {
+            return Err(solana_program::program_error::ProgramError::MissingRequiredSignature.into());
+        }
+    };
+}
+
+/// Ensures an account is owned by the expected program
+#[macro_export]
+macro_rules! assert_owned_by {
+    ($account:expr, $owner:expr) => {
+        if $account.owner != $owner {
+            return Err(solana_program::program_error::ProgramError::IllegalOwner.into());
+        }
+    };
+}
+
+/// Ensures two keys are equal
+#[macro_export]
+macro_rules! assert_keys_eq {
+    ($key_a:expr, $key_b:expr, $err:expr) => {
+        if $key_a != $key_b {
+            return Err($err.into());
+        }
+    };
+}
+
+/// Safe math wrapper for common operations
+#[macro_export]
+macro_rules! checked_add {
+    ($a:expr, $b:expr) => {
+        $a.checked_add($b).ok_or(solana_program::program_error::ProgramError::ArithmeticOverflow)
+    };
+}
+
 /// Initialize a new FORGE project at the given path
 pub fn init_project(path: &Path) -> Result<()> {
     if path.exists() {
@@ -41,6 +81,7 @@ name = "forge_program"
 
 [dependencies]
 solana-program = "1.18"
+forge-runtime = { path = "../../crates/forge-runtime" }
 "#;
 
     std::fs::write(path.join("Cargo.toml"), cargo_toml)?;
@@ -52,14 +93,21 @@ solana-program = "1.18"
     entrypoint::ProgramResult,
     pubkey::Pubkey,
 };
+use forge_runtime::{require_signer, assert_owned_by};
 
 entrypoint!(process_instruction);
 
 pub fn process_instruction(
     _program_id: &Pubkey,
-    _accounts: &[AccountInfo],
+    accounts: &[AccountInfo],
     _instruction_data: &[u8],
 ) -> ProgramResult {
+    let account_info_iter = &mut accounts.iter();
+    let payer = solana_program::account_info::next_account_info(account_info_iter)?;
+    
+    // Security check using Forge macros
+    require_signer!(payer);
+
     Ok(())
 }
 "#;
@@ -71,7 +119,7 @@ pub fn process_instruction(
 
 /// Build a Solana program at the given path
 pub fn build_program(path: &Path) -> Result<BuildArtifact> {
-    // Run cargo build-bpf
+    // Run cargo build-sbf
     let output = std::process::Command::new("cargo")
         .args(&["build-sbf", "--manifest-path", &path.join("Cargo.toml").to_string_lossy()])
         .output()?;
@@ -107,15 +155,9 @@ pub fn build_program(path: &Path) -> Result<BuildArtifact> {
 /// Deploy a program to the given RPC endpoint
 pub fn deploy_program(artifact: BuildArtifact, rpc_url: &str) -> Result<Pubkey> {
     let client = RpcClient::new(rpc_url.to_string());
-    let payer = Keypair::new(); // In production, this would be user-provided
+    let _payer = Keypair::new(); // In production, this would be user-provided
 
-    // This is a simplified deployment - real deployment would require:
-    // 1. Proper keypair management
-    // 2. Program account creation
-    // 3. Bytecode upload
-    // 4. Account funding
-
-    // For now, just return the program ID
+    // This is a simplified deployment
     Ok(artifact.program_id)
 }
 

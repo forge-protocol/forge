@@ -110,7 +110,8 @@ wallet = "~/.config/solana/id.json"
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 `;
   let dependencies = `anchor-lang = "${anchorVer}"
-anchor-spl = "${anchorVer}"`;
+anchor-spl = "${anchorVer}"
+forge-runtime = "0.1.0"`;
 
   // Add CPI-specific dependencies
   if (cpiCode) {
@@ -142,7 +143,8 @@ ${dependencies}
 `;
 
   // Generate imports and CPI code
-  let imports = `use anchor_lang::prelude::*;`;
+  let imports = `use anchor_lang::prelude::*;
+use forge_runtime::{require_signer, assert_owned_by};`;
   let cpiImports = '';
   let cpiCodeBlock = '';
   let extraAccounts = '';
@@ -163,7 +165,13 @@ pub mod ${name.replace(/-/g, '_')} {
     use super::*;
 
     pub fn process_intent(ctx: Context<ProcessIntent>) -> Result<()> {
-        msg!("Processing intent...");${cpiCodeBlock}
+        msg!("Processing intent...");
+
+        // Built-in security check
+        if ctx.accounts.authority.is_some() {
+            require_signer!(ctx.accounts.authority.as_ref().unwrap());
+        }
+        ${cpiCodeBlock}
 
         msg!("Intent processed successfully!");
         Ok(())
@@ -263,7 +271,7 @@ async function initFromTemplate(projectName: string, template: any, anchorVersio
   const programId = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS";
 
   // Generate template files based on template ID
-  let templateFiles: Array<{path: string, content: string}> = [];
+  let templateFiles: Array<{ path: string, content: string }> = [];
 
   switch (template.id) {
     case 'token-program':
@@ -318,7 +326,7 @@ export async function listTemplatesCommand(): Promise<void> {
   console.log('📚 Available FORGE Templates\n');
 
   const categories = ['token', 'nft', 'dao', 'defi', 'utility'] as const;
-  
+
   for (const category of categories) {
     const categoryTemplates = templates.filter(t => t.category === category);
     if (categoryTemplates.length > 0) {

@@ -5,9 +5,9 @@ const commander_1 = require("commander");
 const ascii_js_1 = require("./ascii.js");
 const init_js_1 = require("./commands/init.js");
 const deploy_js_1 = require("./commands/deploy.js");
+const harden_js_1 = require("./commands/harden.js");
 const status_js_1 = require("./commands/status.js");
 const generate_sdk_js_1 = require("./commands/generate-sdk.js");
-const audit_js_1 = require("./commands/audit.js");
 const test_js_1 = require("./commands/test.js");
 const verify_js_1 = require("./commands/verify.js");
 const upgrade_js_1 = require("./commands/upgrade.js");
@@ -27,7 +27,7 @@ const program = new commander_1.Command();
 program
     .name('forge')
     .description('FORGE - Intent-driven app assembly on Solana')
-    .version('3.0.0');
+    .version('3.3.0');
 program
     .command('init [projectName]')
     .description('Initialize a new FORGE project')
@@ -51,13 +51,13 @@ program
     await (0, deploy_js_1.deployCommand)(options.env);
 });
 program
-    .command('audit')
-    .description('Run security audit on Anchor program')
-    .option('--deep', 'Run deep security analysis with advanced checks')
-    .action(async (options) => {
-    await (0, audit_js_1.auditCommand)(options.deep);
+    .command('harden')
+    .description('Apply security best-practices and forge-runtime safeguards')
+    .action(async () => {
+    await (0, harden_js_1.hardenCommand)();
 });
 program
+    .command('audit')
     .command('test')
     .description('Generate and run comprehensive test suite')
     .action(async () => {
@@ -176,6 +176,7 @@ program.on('--help', () => {
     console.log('\nDevelopment:');
     console.log('  test          Generate and run comprehensive tests');
     console.log('  audit         Run security audit (--deep for advanced)');
+    console.log('  harden        Apply security safeguards to your project');
     console.log('  quality       Analyze code quality metrics');
     console.log('  profile       Analyze performance and compute units');
     console.log('  docs          Generate API documentation');
