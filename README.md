@@ -1,6 +1,7 @@
 # FORGE ⚡
 
 [![npm](https://img.shields.io/npm/v/forge-solana-sdk)](https://www.npmjs.org/package/forge-solana-sdk)
+[![npm downloads](https://img.shields.io/npm/dt/forge-solana-sdk)](https://www.npmjs.com/package/forge-solana-sdk)
 [![License](https://img.shields.io/npm/l/forge-solana-sdk)](https://github.com/forge-protocol/forge/blob/main/LICENSE)
 
 **Intent-driven Solana program assembly.** Generate production-ready Anchor programs from natural language. 
