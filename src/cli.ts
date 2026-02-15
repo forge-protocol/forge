@@ -30,7 +30,7 @@ const program = new Command();
 program
   .name('forge')
   .description('FORGE - Intent-driven app assembly on Solana')
-  .version('3.4.1');
+  .version('3.4.2');
 
 program
   .command('init [projectName]')
