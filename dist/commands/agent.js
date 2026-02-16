@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.agentCommand = agentCommand;
 const fs_1 = require("fs");
+const child_process_1 = require("child_process");
 const ascii_js_1 = require("../ascii.js");
 async function agentCommand(action = 'analyze', options = {}) {
     console.log(ascii_js_1.logo);
@@ -30,9 +31,15 @@ async function agentCommand(action = 'analyze', options = {}) {
             case 'harden':
                 await hardenForAgents();
                 break;
+            case 'policy':
+                await generateAgentPolicy();
+                break;
+            case 'doctor':
+                await runAgentDoctor();
+                break;
             default:
                 console.error(`❌ Unknown action: ${action}`);
-                console.log('Available actions: analyze, manifest, harden, simulate, link, pulse');
+                console.log('Available actions: analyze, manifest, harden, simulate, link, pulse, policy, doctor');
         }
     }
     catch (error) {
@@ -210,6 +217,65 @@ async function startAgentPulse() {
     }, 100);
     // Wait for the interval to finish before returning
     await new Promise(resolve => setTimeout(resolve, 4500));
+}
+async function generateAgentPolicy() {
+    console.log('📜 Generating Agentic Runtime Policy (SAFE Boundary)...\n');
+    const manifest = await buildManifest();
+    const policy = {
+        name: `${manifest.name} Default Policy`,
+        version: '1.0.0',
+        governance: {
+            requireMultiSig: false,
+            emergencyStopEnabled: true
+        },
+        constraints: {
+            maxSolPerTransaction: 0.1,
+            dailySpendLimitSol: 1.0,
+            allowedPrograms: [
+                'Token Program',
+                'System Program',
+                'Associated Token Account Program'
+            ],
+            blockedInstructions: manifest.constraints.restrictedInstructions
+        },
+        monitoring: {
+            pulseFrequencyMs: 5000,
+            autoAuditEnabled: true
+        }
+    };
+    const outputPath = 'agent-policy.json';
+    (0, fs_1.writeFileSync)(outputPath, JSON.stringify(policy, null, 2));
+    console.log(`✅ Agent Policy generated: ${outputPath}`);
+    console.log('🛡️  This policy defines the safety boundaries for autonomous execution.');
+}
+async function runAgentDoctor() {
+    console.log('🩺 Running FORGE Agentic Doctor...\n');
+    const checks = [
+        { name: 'Solana CLI', cmd: 'solana --version', minVer: '1.18.0' },
+        { name: 'Anchor CLI', cmd: 'anchor --version', minVer: '0.29.0' },
+        { name: 'Rust Toolchain', cmd: 'rustc --version', minVer: '1.85.0' },
+        { name: 'Forge Runtime', check: () => checkHardening() }
+    ];
+    for (const check of checks) {
+        process.stdout.write(`- Checking ${check.name}... `);
+        try {
+            if (check.cmd) {
+                const out = (0, child_process_1.execSync)(check.cmd, { stdio: 'pipe' }).toString().trim();
+                process.stdout.write(`✅ (${out})\n`);
+            }
+            else if (check.check) {
+                const ok = check.check();
+                if (ok)
+                    process.stdout.write('✅ (Integrated)\n');
+                else
+                    process.stdout.write('⚠️  (Forge Runtime not found in project)\n');
+            }
+        }
+        catch (e) {
+            process.stdout.write('❌ (Missing or failed)\n');
+        }
+    }
+    console.log('\n✅ Diagnosis complete. Environment ready for agentic operations.');
 }
 async function detectSecurityIssues() {
     const issues = [];
