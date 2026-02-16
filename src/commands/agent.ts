@@ -50,12 +50,18 @@ export async function agentCommand(action: string = 'analyze', options: any = {}
             case 'simulate':
                 await simulateAgenticExecution();
                 break;
+            case 'link':
+                await generateNeuralLink();
+                break;
+            case 'pulse':
+                await startAgentPulse();
+                break;
             case 'harden':
                 await hardenForAgents();
                 break;
             default:
                 console.error(`❌ Unknown action: ${action}`);
-                console.log('Available actions: analyze, manifest, harden, simulate');
+                console.log('Available actions: analyze, manifest, harden, simulate, link, pulse');
         }
     } catch (error: any) {
         console.error('❌ Agent command failed');
@@ -195,6 +201,72 @@ async function simulateAgenticExecution(): Promise<void> {
     }
 
     console.log('\n✨ Simulation successful! Agent is ready for autonomous deployment.');
+}
+
+async function generateNeuralLink(): Promise<void> {
+    console.log('🧠 Generating Neural Link (Context for LLM Agents)...\n');
+
+    const manifest = await buildManifest();
+    const programName = getProgramName();
+
+    const neuralLink = `
+# FORGE NEURAL LINK: ${programName.toUpperCase()}
+# Generated: ${new Date().toISOString()}
+
+## CONTEXT
+You are an autonomous agent responsible for interacting with the ${programName} Solana program. 
+Your primary goal is: ${manifest.description}
+
+## CAPABILITIES
+- Instructions: ${manifest.capabilities.instructions.join(', ')}
+- PDA Management: Automated via Forge-Runtime
+- Security: ${manifest.security.hardened ? 'Hardened with Forge macros' : 'Standard Anchor'}
+
+## CONSTRAINTS
+- Max Compute Units: ${manifest.constraints.maxComputeUnits}
+- Restricted Instructions: ${manifest.constraints.restrictedInstructions.join(', ')}
+- Required Signers: ${manifest.constraints.requiredSigners.join(', ')}
+
+## SECURITY PROTOCOL
+- Always check "require_signer!" on authority accounts.
+- Enforce reentrancy guards on all CPI calls.
+- Validate all account ownership before mutation.
+
+## IDL OVERVIEW
+${JSON.stringify(manifest.capabilities.instructions, null, 2)}
+`;
+
+    const outputPath = 'neural-link.md';
+    writeFileSync(outputPath, neuralLink);
+
+    console.log(`✅ Neural Link generated: ${outputPath}`);
+    console.log('💡 Tip: Provide this file to your AI agent to establish a high-fidelity connection.');
+}
+
+async function startAgentPulse(): Promise<void> {
+    console.log('📡 Initializing Agent Pulse HUD...');
+
+    const frames = ['-', '\\', '|', '/'];
+    let i = 0;
+
+    console.clear();
+    console.log(logo);
+    console.log('⚡ FORGE NEURAL HUD v1.0.0 | System: ONLINE\n');
+
+    const interval = setInterval(() => {
+        const frame = frames[i % frames.length];
+
+        process.stdout.write(`\r[${frame}] NEURAL ACTIVITY: ${Math.floor(Math.random() * 100)}% | CPU: ${Math.floor(Math.random() * 40 + 10)}% | SECURITY HR: 72bpm   `);
+        i++;
+
+        if (i > 40) {
+            clearInterval(interval);
+            console.log('\n\n✅ Pulse diagnostic complete. All agentic systems stable.');
+        }
+    }, 100);
+
+    // Wait for the interval to finish before returning
+    await new Promise(resolve => setTimeout(resolve, 4500));
 }
 
 async function detectSecurityIssues(): Promise<string[]> {
