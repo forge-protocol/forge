@@ -24,11 +24,12 @@ const network_js_1 = require("./commands/network.js");
 const search_js_1 = require("./commands/search.js");
 const analytics_js_1 = require("./commands/analytics.js");
 const ci_js_1 = require("./commands/ci.js");
+const agent_js_1 = require("./commands/agent.js");
 const program = new commander_1.Command();
 program
     .name('forge')
     .description('FORGE - Intent-driven app assembly on Solana')
-    .version('3.4.1');
+    .version('3.4.2');
 program
     .command('init [projectName]')
     .description('Initialize a new FORGE project')
@@ -166,6 +167,13 @@ program
     .description('Check FORGE status and environment')
     .action(async () => {
     await (0, status_js_1.statusCommand)();
+});
+program
+    .command('agent [action]')
+    .description('Manage agentic capabilities (analyze, manifest, harden)')
+    .option('-o, --output <path>', 'Output path for manifest', 'agent-manifest.json')
+    .action(async (action, options) => {
+    await (0, agent_js_1.agentCommand)(action, options);
 });
 program
     .command('update')
