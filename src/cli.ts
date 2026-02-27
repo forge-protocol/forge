@@ -195,7 +195,7 @@ program
 
 program
   .command('agent [action]')
-  .description('Manage agentic capabilities (analyze, manifest, harden)')
+  .description('Manage agentic capabilities (analyze, manifest, harden, brain, pulse, doctor)')
   .option('-o, --output <path>', 'Output path for manifest', 'agent-manifest.json')
   .action(async (action, options) => {
     await agentCommand(action, options);

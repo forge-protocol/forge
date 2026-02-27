@@ -75,3 +75,19 @@ Manage keypairs (`generate`, `import`, `info`).
 
 ### `forge network <action>`
 Manage Solana network connections (`switch`, `status`, `test`).
+
+---
+
+## 🤖 Agentic Platform (KYA)
+
+### `forge agent <action>`
+Manage agentic capabilities and "Know Your Agent" (KYA) compliance.
+- `analyze`: Analyze program for agentic capabilities and security.
+- `manifest`: Generate KYA manifest for the agent.
+- `brain`: Synthesize a "Knowledge Hub" (Markdown + Mermaid) for AI agents.
+- `harden`: Apply specialized security guards for autonomous execution.
+- `simulate`: Run a dry-run of agentic execution patterns.
+- `link`: Generate a Neural Link (LLM context) for the program.
+- `pulse`: Launch the Agent Pulse HUD for real-time monitoring.
+- `doctor`: Run environment diagnostics for agentic operations.
+- `policy`: Generate a safety boundary policy for autonomous agents.
